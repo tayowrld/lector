@@ -1,8 +1,18 @@
-# React + Vite
+# Проект настроен чисто для личного пользования группой 436 РГРТУ, не является коммерческим продуктом.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Запуск проекта
 
-Currently, two official plugins are available:
+1. Установите зависимости:
+   ```bash
+   npm install
+   ```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+2. Запустите сервер:
+   ```bash
+   node server/server.js
+   ```
+
+3. Запустите фронтенд:
+   ```bash
+   npm run dev
+   ```
