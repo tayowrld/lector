@@ -22,37 +22,44 @@ app.use(bodyParser.json());
 // Путь к файлу JSON с лекциями
 const lecturesFilePath = path.join(__dirname, 'lectures.json');
 
+// Функция для чтения лекций из файла
+const readLecturesFromFile = () => {
+  try {
+    const data = fs.readFileSync(lecturesFilePath, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Ошибка при чтении файла:', err);
+    return []; // Если файл пустой или отсутствует, возвращаем пустой массив
+  }
+};
+
+// Функция для записи лекций в файл
+const writeLecturesToFile = (lectures) => {
+  try {
+    fs.writeFileSync(lecturesFilePath, JSON.stringify(lectures, null, 2));
+    console.log('Файл lectures.json успешно обновлен');
+  } catch (err) {
+    console.error('Ошибка при записи в файл:', err);
+  }
+};
+
 // Эндпоинт для получения всех лекций
 app.get('/lectures', (req, res) => {
-  fs.readFile(lecturesFilePath, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: 'Ошибка при чтении файла' });
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.json(JSON.parse(data));
-  });
+  const lectures = readLecturesFromFile();
+  res.setHeader('Content-Type', 'application/json');
+  res.json(lectures);
 });
 
 // Эндпоинт для добавления лекций
 app.post('/lectures', (req, res) => {
   const newLecture = req.body;
 
-  fs.readFile(lecturesFilePath, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: 'Ошибка при чтении файла' });
-    }
+  const lectures = readLecturesFromFile(); // Читаем текущие лекции
+  lectures.push(newLecture); // Добавляем новую лекцию
 
-    const lectures = JSON.parse(data);
-    lectures.push(newLecture);
+  writeLecturesToFile(lectures); // Записываем обновленный список лекций в файл
 
-    fs.writeFile(lecturesFilePath, JSON.stringify(lectures, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Ошибка при записи в файл' });
-      }
-
-      res.status(201).json(newLecture);
-    });
-  });
+  res.status(201).json(newLecture); // Отправляем обратно добавленную лекцию
 });
 
 // Запуск сервера
